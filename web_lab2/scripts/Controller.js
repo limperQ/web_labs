@@ -13,12 +13,12 @@ Controller.prototype.init = function () {
   Controller.prototype.moving = function (e) {
     this.carModel.carMove(e);
     if (carModel.objs.game_start == false) {
-        let timer = setInterval(() => this.carModel.anotherCarMove(e), 100);
-        carModel.objs.game_start = true;
-        }
+        let timer = setInterval(() => this.carModel.anotherCarMove(e), carModel.objs.game_speed);
+        this.carModel.objs.game_start = true;
+        
+      }
     };     
 
-  
   Controller.prototype.needRendering = function () {
     this.carView.render(carModel.objs);
   };

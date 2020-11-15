@@ -1,33 +1,21 @@
-const INITIAL_MY_CAR_X = 80;
-const INITIAL_MY_CAR_Y = 440;
-const INITIAL_ANOTHER_CAR_X = 80;
-const INITIAL_ANOTHER_CAR_Y = 0;
-const STEP_X = 120;
-const STEP_Y = 40;
-const KEY_CODE_RIGHT = 39;
-const KEY_CODE_LEFT = 37;
-const LEFT_BORDER = 80;
-const RIGHT_BORDER = 200;
-const TOP_BORDER = 0;
-const DOWN_BORDER = 440;
-
 var Model = function() {
     this.objs = {
         myCar: {
             type: "car",
             x: INITIAL_MY_CAR_X,
             y: INITIAL_MY_CAR_Y,
-            line: 1,
+            line: 1
         },
         anotherCar: {
             type: "car",
-            x: Math.random() < 0.5 ? INITIAL_ANOTHER_CAR_X : INITIAL_ANOTHER_CAR_X + 120,
+            x: Math.random() < 0.5 ? INITIAL_ANOTHER_CAR_X : INITIAL_ANOTHER_CAR_X + (BLOCK_OF_MAP * 3),
             y: INITIAL_ANOTHER_CAR_Y,
             line: 0,
         },
         score: 0,
         result_game: "null",
-        game_start: false
+        game_start: false,
+        game_speed: 90
     };
 };
 
@@ -38,7 +26,7 @@ Model.prototype.init = function(renderFunc) {
 Model.prototype.setCoords = function(obj, x, y) {
     x = x == (undefined || null) ? obj.x : x;    
     y = y == (undefined || null) ? obj.y : y;
-    checkCollisions.call(this, obj, x, y);
+    moving.call(this, obj, x, y);
     this.needRendering();    
 };
 
@@ -77,28 +65,28 @@ Model.prototype.getCoords = function (obj) {
     carModel.setCoords(carModel.objs.anotherCar, null, y + STEP_Y);      
   };
   
-    function checkCollisions(obj, x, y) {
-        const borderCollision = x < LEFT_BORDER || x > RIGHT_BORDER|| y < TOP_BORDER || y > DOWN_BORDER + 150;
+  function moving(obj, x, y) {
+    const borderCollision = x < LEFT_BORDER || x > RIGHT_BORDER|| y < TOP_BORDER || y > (DOWN_BORDER + FINISH_POSITION);
 
-        if (carModel.objs.anotherCar.y == 280) {
-            carModel.objs.anotherCar.line = (carModel.objs.anotherCar.x == 80 ? 1 : 2);
-        }
-
-        if (carModel.objs.anotherCar.line == carModel.objs.myCar.line) {
-            carModel.objs.result_game = "end";
-        }
-
-        if (!borderCollision && carModel.objs.anotherCar.line != carModel.objs.myCar.line) {
-        obj.x = x;
-        obj.y = y;
-        carModel.objs.anotherCar.position += 40;
-        };
-
-        if (carModel.objs.anotherCar.y >= 560) {
-            carModel.objs.anotherCar.y = 0;
-            carModel.objs.anotherCar.x = Math.random() < 0.5 ? INITIAL_ANOTHER_CAR_X : INITIAL_ANOTHER_CAR_X + 120;
-            carModel.objs.anotherCar.line = 0;
-            carModel.objs.score += 10;
-        }
+    if (carModel.objs.anotherCar.y == 280) {
+        carModel.objs.anotherCar.line = (carModel.objs.anotherCar.x == (BLOCK_OF_MAP * 2) ? 1 : 2);
     }
+
+    if (carModel.objs.anotherCar.line == carModel.objs.myCar.line) {
+        carModel.objs.result_game = "end";
+    }
+
+    if (!borderCollision && carModel.objs.anotherCar.line != carModel.objs.myCar.line) {
+      obj.x = x;
+      obj.y = y;
+      carModel.objs.anotherCar.position += CAR_SPEED;
+    };
+
+    if (carModel.objs.anotherCar.y >= HEIGHT - BLOCK_OF_MAP) {
+        carModel.objs.anotherCar.y = 0;
+        carModel.objs.anotherCar.x = Math.random() < 0.5 ? INITIAL_ANOTHER_CAR_X : INITIAL_ANOTHER_CAR_X + (BLOCK_OF_MAP * 3);
+        carModel.objs.anotherCar.line = 0;
+        carModel.objs.score += 10;
+    }
+}  
   const carModel = new Model();
